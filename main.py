@@ -9,9 +9,11 @@ def main(text_path: str, save_image: bool = True):
         print(text_path + " is not a valid path. Please enter a valid path and try again")
         return
     analyser.initialisation()
+    drawer.initialisation()
     lines = reader.read_lines(text_path)
     for line in lines:
         drawer.draw_new_line(line)
+    drawer.de_init()
 
 
 if __name__ == '__main__':
