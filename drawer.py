@@ -1,5 +1,5 @@
 import turtle
-import analyser
+import sentiment_analyser
 import math
 import colour
 import numpy as np
@@ -30,7 +30,7 @@ def draw_new_line(line: str):
     # determine the sentiment score of each word and of the sentence itself
     line_score = get_line_score(line)
     score_words = []
-    words_list = analyser.tokenize(line)
+    words_list = sentiment_analyser.tokenize(line)
     for word in words_list:
         score_words.append(get_word_score(word, line_score))
 
@@ -44,12 +44,12 @@ def draw_new_line(line: str):
 
 
 def get_line_score(line: str):
-    return analyser.analyze(line)['compound']
+    return sentiment_analyser.analyze(line)['compound']
 
 
 def get_word_score(word: str, line_score):
     if word.isalpha():
-        return analyser.analyze(word)['compound']
+        return sentiment_analyser.analyze(word)['compound']
     else:
         return line_score
 
