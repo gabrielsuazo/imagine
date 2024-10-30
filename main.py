@@ -1,11 +1,11 @@
 import analyser
 import drawer
-import os
 import reader
+import pathlib
 
 
 def main(text_path: str, save_image: bool = True):
-    if not os.path.isfile(text_path):
+    if not pathlib.Path(text_path).is_file():
         print(text_path + " is not a valid path. Please enter a valid path and try again")
         return
     analyser.initialisation()
@@ -17,4 +17,4 @@ def main(text_path: str, save_image: bool = True):
 
 
 if __name__ == '__main__':
-    main('./examples/texts/the_raven.txt')
+    main('./examples/texts/colors.txt')

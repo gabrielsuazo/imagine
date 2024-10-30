@@ -1,14 +1,14 @@
 import turtle
-import random
 import analyser
 import math
 import colour
 import numpy as np
+from color_assigner import retrieve_avg_color
 
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
 LENGTH_FACTOR = 50
-FORWARDS_STEP = 1
+FORWARDS_STEP = 50
 
 
 def initialisation():
@@ -28,16 +28,17 @@ def draw_new_line(line: str):
     t.radians()
 
     # determine the sentiment score of each word and of the sentence itself
-    score = get_line_score(line)
+    line_score = get_line_score(line)
     score_words = []
     words_list = analyser.tokenize(line)
     for word in words_list:
-        score_words.append(get_word_score(word))
+        score_words.append(get_word_score(word, line_score))
 
-    # determine the colors of each word (depends on neighbor words)
+    # determine the colors of each word (depends on the overall line color)
     colors = []
+    line_color = colour.Color(rgb=tuple(map(lambda x: x / 255, retrieve_avg_color(line))))
     for word in words_list:
-        colors.append(get_word_color(word))
+        colors.append(get_word_color(word, line_color))
 
     draw_words(t, words_list, score_words, colors)
 
@@ -46,12 +47,18 @@ def get_line_score(line: str):
     return analyser.analyze(line)['compound']
 
 
-def get_word_score(word: str):
-    return analyser.analyze(word)['compound']
+def get_word_score(word: str, line_score):
+    if word.isalpha():
+        return analyser.analyze(word)['compound']
+    else:
+        return line_score
 
 
-def get_word_color(word: str):
-    return random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
+def get_word_color(word: str, line_color):
+    if word.isalpha():
+        return colour.Color(rgb=tuple(map(lambda x: x / 255, retrieve_avg_color(word))))
+    else:
+        return line_color
 
 
 def draw_word(t: turtle.Turtle, word, new_score, color, old_color, width, old_width):
@@ -63,7 +70,7 @@ def draw_word(t: turtle.Turtle, word, new_score, color, old_color, width, old_wi
 
 
 def draw_words(t: turtle.Turtle, word_list, scores, colors):
-    old_color = (255, 255, 255)
+    old_color = colour.Color(rgb=(1, 1, 1))
     old_width = 0
     for i in range(len(word_list)):
         word = word_list[i]
@@ -109,8 +116,10 @@ def move_forwards(t: turtle.Turtle, distance: int, new_color, old_color, new_wid
 
 
 def transition_color(old_color, new_color):
-    return list(colour.Color(rgb=tuple(map(lambda x: x / 255, old_color))).range_to(colour.Color(rgb=tuple(map(lambda x: x / 255, new_color))), LENGTH_FACTOR//FORWARDS_STEP))
+    return [new_color]
+    # return list(old_color.range_to(new_color, LENGTH_FACTOR//FORWARDS_STEP))
 
 
 def transition_width(old_width, new_width):
-    return np.linspace(old_width, new_width, LENGTH_FACTOR//FORWARDS_STEP)
+    return [new_width]
+    # return np.linspace(old_width, new_width, LENGTH_FACTOR//FORWARDS_STEP)
