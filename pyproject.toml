@@ -7,6 +7,15 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+nltk = "^3.9.1"
+colour = "^0.1.5"
+numpy = "^2.1.1"
+beautifulsoup4 = "^4.12.3"
+requests = "^2.32.3"
+pillow = "^10.4.0"
+selenium = "^4.25.0"
+transformers = "^4.46.1"
+torchvision = "^0.20.1"
 
 
 [build-system]
